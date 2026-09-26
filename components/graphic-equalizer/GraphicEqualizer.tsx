@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useAudioEngine } from "@/audio/AudioEngineProvider";
 import ChannelModeButton from "@/components/graphic-equalizer/ChannelModeButton";
 import { EQ_BAND_COUNT } from "@/components/graphic-equalizer/constants";
 import EqBands from "@/components/graphic-equalizer/EqBands";
@@ -12,10 +13,15 @@ const INITIAL_BANDS = Array.from({ length: EQ_BAND_COUNT }, () => 0);
 
 export default function GraphicEqualizer() {
   const insets = useSafeAreaInsets();
+  const { setParams } = useAudioEngine();
   const [bands, setBands] = useState(INITIAL_BANDS);
   const [volume, setVolume] = useState(0.75);
   const [shift, setShift] = useState(0);
   const [stereo, setStereo] = useState(false);
+
+  useEffect(() => {
+    setParams({ bands, volume, shift, stereo });
+  }, [bands, volume, shift, stereo, setParams]);
 
   return (
     <View
