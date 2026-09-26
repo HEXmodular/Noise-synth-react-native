@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Lunette synth",
-    "slug": "Lunette-mobile",
+    "name": "Noise synth",
+    "slug": "Noise-mobile",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "icon": "./assets/images/icon.png",
-    "scheme": "lunette",
+    "scheme": "noise",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#081126",
     "ios": {
@@ -19,7 +19,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.ejji.Lunette"
+      "package": "com.ejji.Noise"
     },
     "web": {
       "output": "static",
