@@ -14,8 +14,8 @@ const EQ_BANDS = [
 export const EQ_FREQUENCIES = EQ_BANDS.map(([label]) => label);
 export const EQ_BAND_HZ = EQ_BANDS.map(([, hz]) => hz);
 export const EQ_BAND_COUNT = EQ_BANDS.length;
-export const EQ_MIN_DB = -12;
-export const EQ_MAX_DB = 12;
+export const EQ_MIN_DB = -36;
+export const EQ_MAX_DB = 36;
 
 export function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
