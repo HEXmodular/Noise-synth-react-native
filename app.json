@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Lunette-mobile",
+    "name": "Lunette synth",
     "slug": "Lunette-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "lunettemobile",
+    "scheme": "lunette",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#081126",
     "ios": {
@@ -19,7 +19,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.ejji.Lunettemobile"
+      "package": "com.ejji.Lunette"
     },
     "web": {
       "output": "static",
