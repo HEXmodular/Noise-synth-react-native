@@ -8,7 +8,8 @@
     --color-background: #081126;
     --color-primary: #f4f6fa;
     --color-accent: #ea7a53;
-    --color-border: rgba(255, 255, 255, 0.12);
+    --color-border: rgba(255, 255, 255, 0.75);
+    --color-track: rgba(255, 255, 255, 0.75);
     --color-success: #16a34a;
     --color-destructive: #dc2626;
 

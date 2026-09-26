@@ -14,7 +14,7 @@ export default function VerticalFaderTrack({
   const clamped = clamp(level, 0, 1);
 
   return (
-    <View className="relative h-full w-full overflow-hidden rounded-2xl bg-white/10">
+    <View className="relative h-full w-full overflow-hidden rounded-2xl bg-track">
       {bipolar ? (
         <View
           className="absolute left-0 right-0 bg-accent"
@@ -31,7 +31,7 @@ export default function VerticalFaderTrack({
       )}
       {bipolar ? (
         <View
-          className="absolute left-0 right-0 bg-primary/40"
+          className="absolute left-0 right-0 bg-primary"
           style={{ top: "50%", height: 1 }}
         />
       ) : null}

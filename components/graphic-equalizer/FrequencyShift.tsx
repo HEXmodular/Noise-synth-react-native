@@ -59,7 +59,7 @@ export default function FrequencyShift({
           }}
         >
           <View
-            className="relative h-5 overflow-hidden rounded-full bg-white/10"
+            className="relative h-5 overflow-hidden rounded-full bg-track"
             pointerEvents="none"
           >
             <View
@@ -77,7 +77,7 @@ export default function FrequencyShift({
               }
             />
             <View
-              className="absolute bottom-0 top-0 bg-primary/40"
+              className="absolute bottom-0 top-0 bg-primary"
               style={{ left: "50%", width: 1 }}
             />
           </View>
