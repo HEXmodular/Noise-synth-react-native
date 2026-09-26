@@ -17,6 +17,12 @@ type Point = {
   y: number;
 };
 
+type TouchSample = {
+  id: number;
+  x: number;
+  y: number;
+};
+
 type EqBandsProps = {
   values: number[];
   onChange: (values: number[]) => void;
@@ -26,33 +32,40 @@ export default function EqBands({ values, onChange }: EqBandsProps) {
   const gainsRef = useRef(values);
   const onChangeRef = useRef(onChange);
   const sizeRef = useRef({ width: 0, height: 0 });
-  const lastPointRef = useRef<Point | null>(null);
+  const pointersRef = useRef(new Map<number, Point>());
 
   onChangeRef.current = onChange;
 
-  const paint = (from: Point, to: Point) => {
+  const applyTouches = (touches: TouchSample[]) => {
     const { width, height } = sizeRef.current;
-    if (width <= 0 || height <= 0) {
+    if (width <= 0 || height <= 0 || touches.length === 0) {
       return;
     }
 
-    const start = clampPoint(from, width, height);
-    const end = clampPoint(to, width, height);
-    const startIndex = xToBandIndex(start.x, width);
-    const endIndex = xToBandIndex(end.x, width);
-    const fromIndex = Math.min(startIndex, endIndex);
-    const toIndex = Math.max(startIndex, endIndex);
     const next = gainsRef.current.slice();
 
-    for (let index = fromIndex; index <= toIndex; index += 1) {
-      next[index] = yToDb(
-        yOnSegment(index, start, end, startIndex, endIndex, width),
+    for (const touch of touches) {
+      const point = { x: touch.x, y: touch.y };
+      const previous = pointersRef.current.get(touch.id) ?? point;
+      writeStroke(
+        next,
+        previous,
+        point,
+        heldBands(pointersRef.current, touch.id, width),
+        width,
         height,
       );
+      pointersRef.current.set(touch.id, point);
     }
 
     gainsRef.current = next;
     onChangeRef.current(next);
+  };
+
+  const releaseTouches = (touches: TouchSample[]) => {
+    for (const touch of touches) {
+      pointersRef.current.delete(touch.id);
+    }
   };
 
   const gesture = useMemo(
@@ -60,18 +73,22 @@ export default function EqBands({ values, onChange }: EqBandsProps) {
       Gesture.Pan()
         .runOnJS(true)
         .minDistance(0)
-        .onBegin((event) => {
-          const point = { x: event.x, y: event.y };
-          paint(point, point);
-          lastPointRef.current = point;
+        .maxPointers(EQ_BAND_COUNT)
+        .onTouchesDown((event) => {
+          applyTouches(event.changedTouches);
         })
-        .onUpdate((event) => {
-          const point = { x: event.x, y: event.y };
-          paint(lastPointRef.current ?? point, point);
-          lastPointRef.current = point;
+        .onTouchesMove((event) => {
+          applyTouches(event.changedTouches);
+        })
+        .onTouchesUp((event) => {
+          applyTouches(event.changedTouches);
+          releaseTouches(event.changedTouches);
+        })
+        .onTouchesCancelled(() => {
+          pointersRef.current.clear();
         })
         .onFinalize(() => {
-          lastPointRef.current = null;
+          pointersRef.current.clear();
         }),
     [],
   );
@@ -117,6 +134,52 @@ export default function EqBands({ values, onChange }: EqBandsProps) {
       </GestureDetector>
     </View>
   );
+}
+
+function heldBands(
+  pointers: Map<number, Point>,
+  currentId: number,
+  width: number,
+) {
+  const held = new Set<number>();
+  const maxX = Math.max(width - 0.01, 0);
+
+  for (const [id, point] of pointers) {
+    if (id === currentId) {
+      continue;
+    }
+
+    held.add(xToBandIndex(clamp(point.x, 0, maxX), width));
+  }
+
+  return held;
+}
+
+function writeStroke(
+  gains: number[],
+  from: Point,
+  to: Point,
+  held: Set<number>,
+  width: number,
+  height: number,
+) {
+  const start = clampPoint(from, width, height);
+  const end = clampPoint(to, width, height);
+  const startIndex = xToBandIndex(start.x, width);
+  const endIndex = xToBandIndex(end.x, width);
+  const fromIndex = Math.min(startIndex, endIndex);
+  const toIndex = Math.max(startIndex, endIndex);
+
+  for (let index = fromIndex; index <= toIndex; index += 1) {
+    if (held.has(index) && index !== endIndex) {
+      continue;
+    }
+
+    gains[index] = yToDb(
+      yOnSegment(index, start, end, startIndex, endIndex, width),
+      height,
+    );
+  }
 }
 
 function clampPoint(point: Point, width: number, height: number) {
