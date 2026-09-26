@@ -9,7 +9,13 @@ export default function RootLayout() {
     <GestureHandlerRootView className="flex-1 bg-background" style={{ flex: 1 }}>
       <StatusBar style="light" />
       <AudioEngineProvider>
-        <Stack screenOptions={{ headerShown: false }} />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            orientation: "landscape",
+            contentStyle: { backgroundColor: "#081126" },
+          }}
+        />
       </AudioEngineProvider>
     </GestureHandlerRootView>
   );

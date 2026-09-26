@@ -1,5 +1,5 @@
-import { View } from "react-native";
+import GraphicEqualizer from "@/components/graphic-equalizer/GraphicEqualizer";
 
 export default function Index() {
-  return <View className="flex-1 bg-background" />;
+  return <GraphicEqualizer />;
 }
